@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogKiller Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>LogKiller Analyzer</h1>
+                </div>
+                <div class="header-info">
+                    <p>Analise e visualize relatórios de ameaças cibernéticas</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <section class="upload-section fade-in">
+                <h2 class="section-title">Upload de Arquivo</h2>
+                <div class="upload-area" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arraste e solte o arquivo de relatório aqui</p>
+                    <p>ou</p>
+                    <button class="btn" id="browseBtn">Procurar arquivo</button>
+                    <input type="file" id="fileInput" class="hidden" accept=".json,.xml,.txt,.log,.pcap,.exe,.dll">
+                </div>
+                
+                <div class="file-info" id="fileInfo">
+                    Nenhum arquivo selecionado
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
+                
+                <div class="status info" id="statusMessage">
+                    Pronto para analisar
+                </div>
+                
+                <div class="upload-actions">
+                    <button class="btn btn-success" id="analyzeBtn" disabled>Analisar Arquivo</button>
+                    <button class="btn btn-danger" id="clearBtn">Limpar</button>
+                </div>
+            </section>
+            
+            <section class="report-section fade-in" style="animation-delay: 0.2s;">
+                <h2 class="section-title">Relatório de Ameaça</h2>
+                
+                <div class="analysis-result" id="analysisResult">
+                    <div class="threat-info">
+                        <div class="info-card">
+                            <h3>Tipo de Ameaça</h3>
+                            <p id="threatType">-</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>Nível de Severidade</h3>
+                            <p id="severityLevel">-</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">Indicadores de Comprometimento (IoCs)</h3>
+                    <div class="iocs-list" id="iocsList">
+                        <p>Nenhum IOC detectado ainda.</p>
+                    </div>
+                    
+                    <h3 class="section-title">Contexto da Ameaça</h3>
+                    <p id="threatContext">Execute a análise para ver detalhes da ameaça.</p>
+                    
+                    <h3 class="section-title">Recomendações</h3>
+                    <div class="recommendations" id="recommendations">
+                        <p>Execute a análise para obter recomendações.</p>
+                    </div>
+                    
+                    <h3 class="section-title">Links Úteis</h3>
+                    <div class="external-links">
+                        <div class="link-card">
+                            <i class="fas fa-project-diagram"></i>
+                            <h3>MITRE ATT&CK</h3>
+                            <a href="https://attack.mitre.org/" target="_blank">Ver Táticas e Técnicas</a>
+                        </div>
+                        <div class="link-card">
+                            <i class="fas fa-virus"></i>
+                            <h3>VirusTotal</h3>
+                            <a href="https://www.virustotal.com/" target="_blank">Analisar IoCs</a>
+                        </div>
+                        <div class="link-card">
+                            <i class="fas fa-bug"></i>
+                            <h3>CVE Details</h3>
+                            <a href="https://www.cvedetails.com/" target="_blank">Ver Vulnerabilidades</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="noAnalysis" class="status info">
+                    <i class="fas fa-info-circle"></i> Faça upload de um arquivo e clique em "Analisar" para ver os resultados
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Log Killer Analyzer &copy; 2025 - Sistema de análise de ameaças cibernéticas</p>
+        </div>
+    </footer>
+
+    <script src="static/js/main.js"></script>
+</body>
+</html>
