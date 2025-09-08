@@ -30,7 +30,7 @@ def analyze_logs(processed_logs: str, prompt: str | None = None) -> dict:
 
     try:
         response = client.responses.create(
-            model="o4-mini-2025-04-16",
+            model="gpt-4.1-mini-2025-04-14",
             input=[
                 {"role": "system", "content": base_instructions},
                 {"role": "user", "content": input_prompt}
