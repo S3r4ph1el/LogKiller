@@ -1,6 +1,5 @@
 from flask import Flask, jsonify
 from routes.logs import logs_bp
-import os
 
 app = Flask(__name__, static_folder="../frontend/static")
 

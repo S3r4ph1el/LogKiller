@@ -30,28 +30,39 @@ def analyze_logs(processed_logs: str, prompt: str | None = None) -> dict:
 
     try:
         response = client.responses.create(
-            model="gpt-4o-mini",
-            reasoning={"effort": "medium"},
-            instructions=base_instructions,
-            input=input_prompt,
-            response_format={"type": "json_schema"},
-            max_output_tokens=500,
+            model="o4-mini-2025-04-16",
+            input=[
+                {"role": "system", "content": base_instructions},
+                {"role": "user", "content": input_prompt}
+            ],
+            text={
+                "format": {
+                    "type": "json_schema",
+                    "name": "log_analysis",
+                    "strict": True,
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "tipo_ameaca": {"type": "string"},
+                            "iocs": {"type": "array", "items": {"type": "string"}},
+                            "contexto": {"type": "string"},
+                            "recomendacoes": {"type": "array", "items": {"type": "string"}}
+                        },
+                        "required": ["tipo_ameaca", "iocs", "contexto", "recomendacoes"],
+                        "additionalProperties": False
+                    }
+                }
+            },
+            max_output_tokens=2500,
         )
 
         content = response.output_text
         return json.loads(content)
     except Exception as e:
         # Fallback robusto caso o parser falhe ou a chamada dê erro
-        raw = None
         try:
             # Tenta extrair texto mesmo quando estrutura falha
             raw = response.output_text  # type: ignore[name-defined]
         except Exception:
             raw = str(e)
-        return {
-            "tipo_ameaca": "",
-            "iocs": [],
-            "contexto": "",
-            "recomendacoes": [],
-            "_raw": raw,
-        }
+        return "Houve um erro ao analisar os logs. Resposta bruta: " + raw

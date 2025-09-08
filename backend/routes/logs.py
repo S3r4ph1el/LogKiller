@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, send_from_directory
 from pathlib import Path
 from core.cleaner import process_logs
 from core.analyzer import analyze_logs
+import tiktoken
 
 logs_bp = Blueprint("logs", __name__)
 
@@ -20,23 +21,23 @@ def analyze():
     prompt = None
     raw_logs = None
 
-    # multipart/form-data
-    if request.files.get("file"):
-        file = request.files["file"]
-        raw_logs = file.read().decode("utf-8", errors="ignore")
-        prompt = request.form.get("prompt")
-    else:
-        # JSON body
-        try:
-            data = request.get_json(silent=True) or {}
-        except Exception:
-            data = {}
-        raw_logs = data.get("logs")
-        prompt = data.get("prompt")
-
-    if not raw_logs:
+    file = request.files.get("file")
+    if not file:
         return jsonify({"error": "Nenhum log fornecido"}), 400
+
+    # Lê o conteúdo do arquivo de log (todos os tipos de arquivo são aceitos)
+    try:
+        raw_logs = file.read().decode("utf-8", errors="ignore")
+    except Exception as e:
+        return jsonify({"error": f"Erro ao ler o arquivo: {str(e)}"}), 400
+
+    if not raw_logs.strip():
+        return jsonify({"error": "O arquivo de log está vazio"}), 400
+
+    enc = tiktoken.encoding_for_model("gpt-5-nano-2025-08-07")
+    n_tokens = len(enc.encode(raw_logs))
 
     processed = process_logs(raw_logs)
     result = analyze_logs(processed, prompt=prompt)
+    print(f"Resultado da análise: {result}")
     return jsonify({"analysis": result})
