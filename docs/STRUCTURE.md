@@ -1,7 +1,7 @@
 # Estrutura do Projeto
 
 ```plaintext
-log-killer/
+LogKiller/
 ├── backend/
 │   ├── app.py                 # Flask principal (entrypoint)
 │   ├── config.py              # Configurações (chaves API, paths, etc.)
