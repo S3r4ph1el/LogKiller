@@ -1,0 +1,155 @@
+.center-iocs {
+    justify-content: center;
+    width: 100%;
+}
+.center-links {
+    justify-content: center;
+    width: 100%;
+}
+body {
+    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+    color: #f5f6fa;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+.container {
+    max-width: 1100px;
+    margin: 40px auto 0 auto;
+    background: rgba(34, 40, 49, 0.98);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    padding: 32px 40px 24px 40px;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.logo i {
+    font-size: 2.5rem;
+    color: #00a8ff;
+}
+.logo h1 {
+    font-size: 2.2rem;
+    margin: 0;
+    font-weight: 700;
+    color: #fff;
+}
+.header-info p {
+    font-size: 1.1rem;
+    color: #dcdde1;
+}
+.section-title {
+    font-size: 1.5rem;
+    margin-top: 32px;
+    margin-bottom: 18px;
+    color: #00a8ff;
+    font-weight: 600;
+}
+.threat-info {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 18px;
+}
+.info-card {
+    background: #353b48;
+    border-radius: 10px;
+    padding: 18px 24px;
+    min-width: 220px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.info-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    color: #00a8ff;
+}
+.info-card p {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #fff;
+}
+.iocs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.ioc-item {
+    background: #2d3436;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ioc-type {
+    background: #00a8ff;
+    color: #fff;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.recommendations {
+    margin-bottom: 18px;
+}
+.recommendation {
+    background: #353b48;
+    border-radius: 8px;
+    padding: 10px 18px;
+    margin-bottom: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.recommendation i {
+    color: #44bd32;
+    font-size: 1.2rem;
+}
+.external-links {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 18px;
+}
+.link-card {
+    background: #353b48;
+    border-radius: 10px;
+    padding: 18px 24px;
+    min-width: 200px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-align: center;
+}
+.link-card i {
+    font-size: 1.5rem;
+    color: #00a8ff;
+}
+.link-card h3 {
+    margin: 10px 0 8px 0;
+    font-size: 1.1rem;
+    color: #fff;
+}
+.link-card a {
+    color: #00a8ff;
+    text-decoration: none;
+    font-weight: 500;
+}
+.contexto-box {
+    background: #2d3436;
+    border-radius: 8px;
+    padding: 16px;
+    color: #fff;
+    margin-bottom: 18px;
+    font-size: 1.1rem;
+}
+@media (max-width: 900px) {
+    .container { padding: 16px; }
+    .main-content { padding: 0; }
+    .threat-info { flex-direction: column; gap: 16px; }
+    .external-links { flex-direction: column; gap: 16px; }
+}

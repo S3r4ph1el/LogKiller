@@ -7,10 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInfo = document.getElementById('fileInfo');
     const progressBar = document.getElementById('progressBar');
     const statusMessage = document.getElementById('statusMessage');
-    const analysisResult = document.getElementById('analysisResult');
-    const noAnalysis = document.getElementById('noAnalysis');
-    // Campo de prompt é opcional; se não existir, seguimos sem ele
-    const promptInput = document.getElementById('promptInput');
+    // Removido: elementos de relatório não existem no index.html
+    let promptInput = null;
+    if (document.getElementById('promptInput')) {
+        promptInput = document.getElementById('promptInput');
+    }
     
     let currentFile = null;
     
@@ -52,8 +53,12 @@ document.addEventListener('DOMContentLoaded', function() {
         handleFiles(files);
     }
     
+    let analyzedCount = Number(localStorage.getItem('logkiller_total_analyzed') || 0);
+    const totalAnalyzed = document.getElementById('totalAnalyzed');
+    totalAnalyzed.textContent = analyzedCount;
+
     // Botão de procurar arquivo
-    browseBtn.addEventListener('click', () => {
+    browseBtn.addEventListener('click', function() {
         fileInput.click();
     });
     
@@ -146,16 +151,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await res.json();
             const analysis = data && data.analysis ? data.analysis : {};
 
-            // Renderizar resultados
-            renderAnalysis(analysis);
-
             // Finalizar progresso
             progressBar.style.width = '100%';
             statusMessage.textContent = 'Análise concluída com sucesso!';
             statusMessage.className = 'status success';
 
-            analysisResult.classList.add('visible');
-            noAnalysis.classList.add('hidden');
+            // Salva dados no localStorage para o report
+            localStorage.setItem('logkiller_report', JSON.stringify(analysis));
+
+            // Redireciona para o relatório
+            window.location.href = '/report';
         } catch (e) {
             statusMessage.textContent = `Falha na análise: ${e.message || e}`;
             statusMessage.className = 'status error';
@@ -163,93 +168,33 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(tick);
             analyzeBtn.disabled = false;
         }
-    }
 
-    function renderAnalysis(analysis) {
-        const threatType = analysis.tipo_ameaca || analysis.threatType || '-';
-        const context = analysis.contexto || analysis.context || '-';
-        const recommendationsArr = analysis.recomendacoes || analysis.recommendations || [];
+}
 
-        // Severidade pode não vir do backend; deixa em '-' se ausente
-        const severity = analysis.severidade || analysis.severity || '-';
+function guessIocType(value) {
+    if (!value || typeof value !== 'string') return 'IOC';
+    const urlPattern = /^https?:\/\/|^ftp:\/\//i;
+    const ipPattern = /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+    const hashPattern = /^[A-Fa-f0-9]{32}$|^[A-Fa-f0-9]{40}$|^[A-Fa-f0-9]{64}$/; // MD5/SHA1/SHA256
+    const domainPattern = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)\.(?:[A-Za-z]{2,})(?:\.[A-Za-z]{2,})*$/;
+    if (ipPattern.test(value)) return 'IP';
+    if (urlPattern.test(value)) return 'URL';
+    if (hashPattern.test(value)) return 'Hash';
+    if (domainPattern.test(value)) return 'Domínio';
+    if (/\\|\//.test(value)) return 'Arquivo';
+    return 'IOC';
+}
 
-        document.getElementById('threatType').textContent = threatType || '-';
-        document.getElementById('severityLevel').textContent = severity || '-';
-        document.getElementById('threatContext').textContent = context || '-';
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
 
-        const iocsList = document.getElementById('iocsList');
-        iocsList.innerHTML = '';
-
-        const iocs = Array.isArray(analysis.iocs) ? analysis.iocs : [];
-        if (iocs.length > 0) {
-            iocs.forEach((item) => {
-                // Normalizar IOC: strings ou objetos
-                let value = '';
-                let type = '';
-                if (typeof item === 'string') {
-                    value = item;
-                    type = guessIocType(item);
-                } else if (item && typeof item === 'object') {
-                    value = item.value || item.valor || item.ioc || '';
-                    type = item.type || item.tipo || guessIocType(value);
-                }
-
-                if (!value) return;
-                const iocItem = document.createElement('div');
-                iocItem.className = 'ioc-item';
-                iocItem.innerHTML = `
-                    <span>${escapeHtml(value)}</span>
-                    <span class="ioc-type">${escapeHtml(type || 'IOC')}</span>
-                `;
-                iocsList.appendChild(iocItem);
-            });
-        } else {
-            iocsList.innerHTML = '<p>Nenhum IOC detectado.</p>';
-        }
-
-        const recommendations = document.getElementById('recommendations');
-        recommendations.innerHTML = '';
-        if (Array.isArray(recommendationsArr) && recommendationsArr.length > 0) {
-            recommendationsArr.forEach((rec) => {
-                const text = typeof rec === 'string' ? rec : (rec && rec.text) || '';
-                if (!text) return;
-                const recElement = document.createElement('div');
-                recElement.className = 'recommendation';
-                recElement.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    <p>${escapeHtml(text)}</p>
-                `;
-                recommendations.appendChild(recElement);
-            });
-        } else {
-            recommendations.innerHTML = '<p>Nenhuma recomendação específica.</p>';
-        }
-    }
-
-    function guessIocType(value) {
-        if (!value || typeof value !== 'string') return 'IOC';
-        const urlPattern = /^https?:\/\/|^ftp:\/\//i;
-        const ipPattern = /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
-        const hashPattern = /^[A-Fa-f0-9]{32}$|^[A-Fa-f0-9]{40}$|^[A-Fa-f0-9]{64}$/; // MD5/SHA1/SHA256
-        const domainPattern = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)\.(?:[A-Za-z]{2,})(?:\.[A-Za-z]{2,})*$/;
-        if (ipPattern.test(value)) return 'IP';
-        if (urlPattern.test(value)) return 'URL';
-        if (hashPattern.test(value)) return 'Hash';
-        if (domainPattern.test(value)) return 'Domínio';
-        if (/\\|\//.test(value)) return 'Arquivo';
-        return 'IOC';
-    }
-
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    async function safeJson(res) {
-        try { return await res.json(); } catch { return null; }
-    }
+async function safeJson(res) {
+    try { return await res.json(); } catch { return null; }
+}
 });

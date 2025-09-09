@@ -41,3 +41,9 @@ def analyze():
     result = analyze_logs(processed, prompt=prompt)
     print(f"Resultado da análise: {result}")
     return jsonify({"analysis": result})
+
+@logs_bp.route("/report", methods=["GET"])
+def serve_report_html():
+    project_root = Path(__file__).resolve().parents[2]
+    frontend_dir = project_root / "frontend"
+    return send_from_directory(str(frontend_dir), "report.html")

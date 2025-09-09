@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Análise - LogKiller</title>
+    <link rel="stylesheet" href="static/css/report.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>Relatório de Análise</h1>
+                </div>
+                <div class="header-info">
+                    <p>Resultado detalhado da análise do arquivo enviado</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="main-content">
+            <section class="report-section fade-in">
+                <h2 class="section-title">Resumo da Ameaça</h2>
+                <div class="threat-info">
+                    <div class="info-card">
+                        <h3>Tipo de Ameaça</h3>
+                        <p id="threatType">-</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Nível de Severidade</h3>
+                        <p id="severityLevel">-</p>
+                    </div>
+                </div>
+                <h3 class="section-title">Indicadores de Comprometimento (IoCs)</h3>
+                <div class="iocs-list center-iocs" id="iocsList">
+                    <p>Nenhum IOC detectado.</p>
+                </div>
+                <h3 class="section-title">Contexto da Ameaça</h3>
+                <div class="contexto-box" id="threatContext">-</div>
+                <h3 class="section-title">Recomendações</h3>
+                <div class="recommendations" id="recommendations">
+                    <p>Nenhuma recomendação específica.</p>
+                </div>
+                <h3 class="section-title">Links Úteis</h3>
+                <div class="external-links center-links">
+                    <div class="link-card">
+                        <i class="fas fa-project-diagram"></i>
+                        <h3>MITRE ATT&CK</h3>
+                        <a href="https://attack.mitre.org/" target="_blank">Ver Táticas e Técnicas</a>
+                    </div>
+                    <div class="link-card">
+                        <i class="fas fa-virus"></i>
+                        <h3>VirusTotal</h3>
+                        <a href="https://www.virustotal.com/" target="_blank">Analisar IoCs</a>
+                    </div>
+                    <div class="link-card">
+                        <i class="fas fa-bug"></i>
+                        <h3>CVE Details</h3>
+                        <a href="https://www.cvedetails.com/" target="_blank">Ver Vulnerabilidades</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <p>Log Killer Analyzer &copy; 2025 - Sistema de análise de ameaças cibernéticas</p>
+        </div>
+    </footer>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+        function guessIocType(value) {
+            if (!value || typeof value !== 'string') return 'IOC';
+            const urlPattern = /^https?:\/\/|^ftp:\/\//i;
+            const ipPattern = /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+            const hashPattern = /^[A-Fa-f0-9]{32}$|^[A-Fa-f0-9]{40}$|^[A-Fa-f0-9]{64}$/;
+            const domainPattern = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)\.(?:[A-Za-z]{2,})(?:\.[A-Za-z]{2,})*$/;
+            if (ipPattern.test(value)) return 'IP';
+            if (urlPattern.test(value)) return 'URL';
+            if (hashPattern.test(value)) return 'Hash';
+            if (domainPattern.test(value)) return 'Domínio';
+            if (/\\|\//.test(value)) return 'Arquivo';
+            return 'IOC';
+        }
+        const report = JSON.parse(localStorage.getItem('logkiller_report') || '{}');
+        document.getElementById('threatType').textContent = report.tipo_ameaca || report.threatType || '-';
+        document.getElementById('severityLevel').textContent = report.severidade || report.severity || '-';
+        document.getElementById('threatContext').textContent = report.contexto || report.context || '-';
+        const iocsList = document.getElementById('iocsList');
+        iocsList.innerHTML = '';
+        const iocs = Array.isArray(report.iocs) ? report.iocs : [];
+        if (iocs.length > 0) {
+            iocs.forEach((item) => {
+                let value = '';
+                let type = '';
+                if (typeof item === 'string') {
+                    value = item;
+                    type = guessIocType(item);
+                } else if (item && typeof item === 'object') {
+                    value = item.value || item.valor || item.ioc || '';
+                    type = item.type || item.tipo || guessIocType(value);
+                }
+                if (!value) return;
+                const iocItem = document.createElement('div');
+                iocItem.className = 'ioc-item';
+                iocItem.innerHTML = `<span>${escapeHtml(value)}</span> <span class="ioc-type">${escapeHtml(type || 'IOC')}</span>`;
+                iocsList.appendChild(iocItem);
+            });
+        } else {
+            iocsList.innerHTML = '<p>Nenhum IOC detectado.</p>';
+        }
+        const recommendations = document.getElementById('recommendations');
+        recommendations.innerHTML = '';
+        const recommendationsArr = report.recomendacoes || report.recommendations || [];
+        if (Array.isArray(recommendationsArr) && recommendationsArr.length > 0) {
+            recommendationsArr.forEach((rec) => {
+                const text = typeof rec === 'string' ? rec : (rec && rec.text) || '';
+                if (!text) return;
+                const recElement = document.createElement('div');
+                recElement.className = 'recommendation';
+                recElement.innerHTML = `<i class="fas fa-check-circle"></i> <p>${escapeHtml(text)}</p>`;
+                recommendations.appendChild(recElement);
+            });
+        } else {
+            recommendations.innerHTML = '<p>Nenhuma recomendação específica.</p>';
+        }
+    });
+    </script>
+</body>
+</html>
