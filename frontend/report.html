@@ -3,49 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Análise - LogKiller</title>
-    <link rel="stylesheet" href="static/css/report.css">
+    <title>LogKiller</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/assets/icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="stylesheet" href="static/css/report.css">
+    <link rel="stylesheet" href="static/css/chat.css">
 </head>
 <body>
     <header>
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-shield-alt"></i>
-                    <h1>Relatório de Análise</h1>
-                </div>
-                <div class="header-info">
-                    <p>Resultado detalhado da análise do arquivo enviado</p>
+                    <img src="/assets/icons/icon.png" alt="LogKiller" class="site-logo">
+                    <h1>Relatório da Análise</h1>
                 </div>
             </div>
         </div>
     </header>
+
     <div class="container">
         <div class="main-content">
             <section class="report-section fade-in">
-                <h2 class="section-title">Resumo da Ameaça</h2>
+                <h2 class="section-title"><i class="fas fa-file-medical-alt"></i> Resumo da Ameaça</h2>
                 <div class="threat-info">
                     <div class="info-card">
                         <h3>Tipo de Ameaça</h3>
-                        <p id="threatType">-</p>
+                        <p id="threatType">Não identificado</p>
                     </div>
                     <div class="info-card">
                         <h3>Nível de Severidade</h3>
-                        <p id="severityLevel">-</p>
+                        <p id="severityLevel">Não especificado</p>
+                        <div class="severity-meter" aria-label="Medidor de severidade" title="Severidade">
+                            <div class="severity-bar">
+                                <span class="seg seg-low">Baixa</span>
+                                <span class="seg seg-medium">Média</span>
+                                <span class="seg seg-high">Alta</span>
+                            </div>
+                            <div id="severityPointer" class="severity-pointer" role="presentation"></div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Data da Análise</h3>
+                        <p id="analysisDate">-</p>
                     </div>
                 </div>
-                <h3 class="section-title">Indicadores de Comprometimento (IoCs)</h3>
+
+                <h3 class="section-title"><i class="fas fa-search"></i> Indicadores de Comprometimento (IoCs)</h3>
                 <div class="iocs-list center-iocs" id="iocsList">
-                    <p>Nenhum IOC detectado.</p>
+                    <div class="no-data">Nenhum IOC detectado.</div>
                 </div>
-                <h3 class="section-title">Contexto da Ameaça</h3>
-                <div class="contexto-box" id="threatContext">-</div>
-                <h3 class="section-title">Recomendações</h3>
+
+                <h3 class="section-title"><i class="fas fa-file-alt"></i> Contexto da Ameaça</h3>
+                <div class="contexto-box" id="threatContext">
+                    <div class="no-data">Nenhum contexto disponível.</div>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-tasks"></i> Recomendações</h3>
                 <div class="recommendations" id="recommendations">
-                    <p>Nenhuma recomendação específica.</p>
+                    <div class="no-data">Nenhuma recomendação específica.</div>
                 </div>
-                <h3 class="section-title">Links Úteis</h3>
+
+                <h3 class="section-title"><i class="fas fa-external-link-alt"></i> Links Úteis</h3>
                 <div class="external-links center-links">
                     <div class="link-card">
                         <i class="fas fa-project-diagram"></i>
@@ -63,80 +82,47 @@
                         <a href="https://www.cvedetails.com/" target="_blank">Ver Vulnerabilidades</a>
                     </div>
                 </div>
+
+                                                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+                                                    <a href="/index.html" class="action-btn"><i class="fas fa-arrow-left"></i> Voltar para Análise</a>
+                                                </div>
             </section>
         </div>
     </div>
+
+    <!-- Floating in-page assistant (distinct from external chat) -->
+    <button id="reportChatToggle" class="report-chat-toggle" title="Assistente do relatório">
+        <i class="fas fa-message"></i>
+    </button>
+    <div id="reportChatPanel" class="report-chat-panel" aria-hidden="true">
+        <div class="report-chat-header">
+            <div class="title"><i class="fas fa-robot"></i> Assistente</div>
+            <button id="reportChatClose" class="chat-close" aria-label="Fechar"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="report-chat-chips">
+            <span class="chip" data-q="Explique a severidade deste relatório de forma simples."><i class="fas fa-bolt"></i> Severidade</span>
+            <span class="chip" data-q="Quais são os IoCs mais importantes aqui e como validá-los?"><i class="fas fa-search"></i> IoCs</span>
+            <span class="chip" data-q="Quais ações devo tomar nas próximas 24 horas?"><i class="fas fa-list-check"></i> Próximas ações</span>
+        </div>
+        <div id="reportChatBody" class="report-chat-body" role="log" aria-live="polite"></div>
+        <div class="report-chat-footer">
+            <input id="reportChatInput" type="text" placeholder="Pergunte sobre este relatório..." autocomplete="off" />
+            <button id="reportChatSend" class="send"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
-            <p>Log Killer Analyzer &copy; 2025 - Sistema de análise de ameaças cibernéticas</p>
+            <p>LogKiller Analyzer &copy; 2025 - Sistema de análise de ameaças cibernéticas</p>
         </div>
     </footer>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-        function guessIocType(value) {
-            if (!value || typeof value !== 'string') return 'IOC';
-            const urlPattern = /^https?:\/\/|^ftp:\/\//i;
-            const ipPattern = /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
-            const hashPattern = /^[A-Fa-f0-9]{32}$|^[A-Fa-f0-9]{40}$|^[A-Fa-f0-9]{64}$/;
-            const domainPattern = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)\.(?:[A-Za-z]{2,})(?:\.[A-Za-z]{2,})*$/;
-            if (ipPattern.test(value)) return 'IP';
-            if (urlPattern.test(value)) return 'URL';
-            if (hashPattern.test(value)) return 'Hash';
-            if (domainPattern.test(value)) return 'Domínio';
-            if (/\\|\//.test(value)) return 'Arquivo';
-            return 'IOC';
-        }
-        const report = JSON.parse(localStorage.getItem('logkiller_report') || '{}');
-        document.getElementById('threatType').textContent = report.tipo_ameaca || report.threatType || '-';
-        document.getElementById('severityLevel').textContent = report.severidade || report.severity || '-';
-        document.getElementById('threatContext').textContent = report.contexto || report.context || '-';
-        const iocsList = document.getElementById('iocsList');
-        iocsList.innerHTML = '';
-        const iocs = Array.isArray(report.iocs) ? report.iocs : [];
-        if (iocs.length > 0) {
-            iocs.forEach((item) => {
-                let value = '';
-                let type = '';
-                if (typeof item === 'string') {
-                    value = item;
-                    type = guessIocType(item);
-                } else if (item && typeof item === 'object') {
-                    value = item.value || item.valor || item.ioc || '';
-                    type = item.type || item.tipo || guessIocType(value);
-                }
-                if (!value) return;
-                const iocItem = document.createElement('div');
-                iocItem.className = 'ioc-item';
-                iocItem.innerHTML = `<span>${escapeHtml(value)}</span> <span class="ioc-type">${escapeHtml(type || 'IOC')}</span>`;
-                iocsList.appendChild(iocItem);
-            });
-        } else {
-            iocsList.innerHTML = '<p>Nenhum IOC detectado.</p>';
-        }
-        const recommendations = document.getElementById('recommendations');
-        recommendations.innerHTML = '';
-        const recommendationsArr = report.recomendacoes || report.recommendations || [];
-        if (Array.isArray(recommendationsArr) && recommendationsArr.length > 0) {
-            recommendationsArr.forEach((rec) => {
-                const text = typeof rec === 'string' ? rec : (rec && rec.text) || '';
-                if (!text) return;
-                const recElement = document.createElement('div');
-                recElement.className = 'recommendation';
-                recElement.innerHTML = `<i class="fas fa-check-circle"></i> <p>${escapeHtml(text)}</p>`;
-                recommendations.appendChild(recElement);
-            });
-        } else {
-            recommendations.innerHTML = '<p>Nenhuma recomendação específica.</p>';
-        }
-    });
-    </script>
+    <!-- Shared modules -->
+    <script src="static/js/utils.js"></script>
+    <script src="static/js/storage.js"></script>
+    <script src="static/js/api.js"></script>
+    <!-- Page script -->
+    <script src="static/js/report.js"></script>
+    <!-- Chat widget uses shared modules too -->
+    <script src="static/js/chat_widget.js"></script>
 </body>
 </html>

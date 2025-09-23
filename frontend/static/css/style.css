@@ -1,6 +1,6 @@
 :root {
     --primary: #2c3e50;
-    --secondary: #3498db;
+    --secondary: #000000;
     --danger: #e74c3c;
     --warning: #f39c12;
     --success: #2ecc71;
@@ -21,6 +21,35 @@ body {
     color: #333;
     line-height: 1.6;
 }
+
+/* Fullscreen homepage (no scroll) */
+html, body.home-full {
+    height: 100%;
+}
+/* Contain page scroll within sections; page itself stays fixed */
+.home-full header { padding: 6px 0; margin-bottom: 8px; }
+.home-full .header-content { 
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+}
+.home-full .logo { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.home-full .site-logo { width: 80px; height: 80px; }
+.home-full .logo h1 { font-size: 1.4rem; margin: 0; }
+.home-full .header-info p { font-size: 0.9rem; margin: 0; }
+.home-full .page-container { flex: 1; display:flex; flex-direction:column; min-height: 0; }
+.home-full .main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    flex: 1;
+    min-height: 0; /* enable proper flex overflow */
+}
+.home-full .upload-section,
+.home-full .stats-section { overflow: auto; }
+.site-logo { width: 56px; height: 56px; object-fit: contain; }
 
 .container {
     width: 100%;
@@ -61,8 +90,9 @@ header {
 
 .main-content {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr;
     gap: 30px;
+    padding-bottom: 20px;
 }
 
 .upload-section {
@@ -84,7 +114,7 @@ header {
 
 .upload-area:hover {
     border-color: var(--secondary);
-    background-color: rgba(52, 152, 219, 0.05);
+    background-color: rgba(0, 0, 0, 0.06);
 }
 
 .upload-area i {
@@ -96,6 +126,22 @@ header {
 .upload-area p {
     color: var(--gray);
     margin-bottom: 15px;
+}
+
+/* Upload actions: center, equal width, black theme */
+.home-full .upload-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+.home-full .upload-actions .btn {
+    background-color: var(--secondary) !important; /* black */
+    width: 240px;
+}
+.home-full .upload-actions .btn:hover {
+    background-color: #111111; /* slightly lighter black */
 }
 
 .btn {
@@ -111,7 +157,7 @@ header {
 }
 
 .btn:hover {
-    background-color: #2980b9;
+    background-color: #111111;
     transform: translateY(-2px);
 }
 
@@ -119,18 +165,21 @@ header {
     background-color: var(--danger);
 }
 
-.btn-danger:hover {
-    background-color: #c0392b;
-}
+.btn-danger:hover { background-color: #c0392b; }
 
-.btn-success {
-    background-color: var(--success);
-}
+.btn-success { background-color: var(--success); }
+.btn-success:hover { background-color: #27ae60; }
 
-.btn-success:hover {
-    background-color: #27ae60;
-}
+/* Home full-screen specific adjustments */
+.home-full { overflow: hidden; display: flex; flex-direction: column; min-height: 100vh; }
+.home-full .container, .home-full .page-container { max-width: none; width: 100vw; }
+.home-full .page-container { flex: 1; display:flex; flex-direction:column; min-height: 0; }
+.home-full .main-content { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+.home-full .stats-section { overflow: auto; min-height: 0; max-height: 100%; }
+.home-full .upload-section { overflow: visible; min-height: auto; max-height: none; padding: 18px; }
+.home-full .upload-area { padding: 24px 16px; }
 
+/* Report section card (used on report page) */
 .report-section {
     background: white;
     padding: 25px;
@@ -279,6 +328,13 @@ footer {
     color: #1565c0;
 }
 
+.status.ready {
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.status.ready i { opacity: 0.9; }
+
 .status.success {
     background: #e8f5e9;
     color: #2e7d32;
@@ -300,6 +356,40 @@ footer {
     border-radius: 5px;
     margin: 10px 0;
     font-size: 0.9rem;
+}
+
+/* Estatísticas (para alinhar com Index¹) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #f5f7fa, #e4e8f0);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a2a6c;
+    margin: 10px 0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.header-info p {
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 400px;
 }
 
 /* Responsividade */

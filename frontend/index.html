@@ -3,61 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LogKiller Analyzer</title>
+    <title>LogKiller</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
+    <link rel="icon" type="image/png" href="/assets/icons/icon.png">
     <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/chat.css">
 </head>
-<body>
+<body class="home-full">
     <header>
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-shield-alt"></i>
+                    <img src="/assets/icons/icon.png" alt="LogKiller" class="site-logo">
                     <h1>LogKiller Analyzer</h1>
-                </div>
-                <div class="header-info">
-                    <p>Faça upload de um arquivo de relatório para análise automática</p>
                 </div>
             </div>
         </div>
     </header>
-    
-    <div class="container">
+
+    <div class="container page-container">
         <div class="main-content">
             <section class="upload-section fade-in">
-                <h2 class="section-title">Upload de Arquivo</h2>
+                <h2 class="section-title"><i class="fas fa-file-upload"></i> Upload de Arquivo</h2>
                 <div class="upload-area" id="dropZone">
                     <i class="fas fa-cloud-upload-alt"></i>
                     <p>Arraste e solte o arquivo de relatório aqui</p>
                     <p>ou</p>
-                    <button class="btn" id="browseBtn">Procurar arquivo</button>
+                    <button class="btn" id="browseBtn"><i class="fas fa-folder-open"></i> Procurar arquivo</button>
                     <input type="file" id="fileInput" class="hidden" accept=".json,.txt,.log,.csv,.xml,.pcap,.pcapng">
                 </div>
                 <div class="file-info" id="fileInfo">
-                    Nenhum arquivo selecionado
+                    <i class="fas fa-info-circle"></i> Nenhum arquivo selecionado
                 </div>
                 <div class="progress-bar">
                     <div class="progress" id="progressBar"></div>
                 </div>
-                <div class="status info" id="statusMessage">
-                    Pronto para analisar
+                <div class="status ready" id="statusMessage">
+                    <i class="fas fa-info-circle"></i> Pronto para analisar
                 </div>
                 <div class="upload-actions">
-                    <button class="btn btn-success" id="analyzeBtn" disabled>Analisar Arquivo</button>
-                    <button class="btn btn-danger" id="clearBtn">Limpar</button>
+                    <button class="btn btn-success" id="analyzeBtn" disabled><i class="fas fa-search"></i> Analisar Arquivo</button>
+                    <button class="btn btn-danger" id="clearBtn"><i class="fas fa-trash-alt"></i> Limpar</button>
                 </div>
             </section>
+
             <section class="stats-section fade-in" style="animation-delay: 0.2s;">
-                <h2 class="section-title">Estatísticas</h2>
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Estatísticas</h2>
                 <div id="statsContainer">
-                    <p>Total de arquivos analisados: <span id="totalAnalyzed">0</span></p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalAnalyzed">0</div>
+                            <div class="stat-label">Total de arquivos analisados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="threatsDetected">0</div>
+                            <div class="stat-label">Ameaças detectadas</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h2 class="section-title" style="margin-top:10px;"><i class="fas fa-clock"></i> Últimos relatórios</h2>
+                    <div id="recentReports">
+                        <div class="no-data">Nenhum relatório salvo ainda.</div>
+                    </div>
+                    <div style="margin-top:12px; display:flex; gap:10px;">
+                        <button id="resetDbBtn" class="btn btn-danger" title="Excluir todos os relatórios e zerar estatísticas"><i class="fas fa-database"></i> Limpar banco de dados</button>
+                    </div>
                 </div>
             </section>
         </div>
     </div>
+
     <footer>
         <div class="container">
-            <p>Log Killer Analyzer &copy; 2025 - Sistema de análise de ameaças cibernéticas</p>
+            <p>LogKiller Analyzer &copy; 2025 - Sistema de análise de ameaças cibernéticas</p>
         </div>
     </footer>
+
+    <!-- Floating assistant on index page (same markup/IDs as report) -->
+    <button id="reportChatToggle" class="report-chat-toggle" title="Assistente">
+        <i class="fas fa-message"></i>
+    </button>
+    <div id="reportChatPanel" class="report-chat-panel" aria-hidden="true">
+        <div class="report-chat-header">
+            <div class="title"><i class="fas fa-robot"></i> Assistente</div>
+            <button id="reportChatClose" class="chat-close" aria-label="Fechar"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="report-chat-chips">
+            <span class="chip" data-q="Como começo?"><i class="fas fa-circle-question"></i> Como começar</span>
+            <span class="chip" data-q="Quais formatos de arquivo são aceitos?"><i class="fas fa-file"></i> Formatos suportados</span>
+            <span class="chip" data-q="O que o relatório mostra?"><i class="fas fa-file-alt"></i> Sobre o relatório</span>
+        </div>
+        <div id="reportChatBody" class="report-chat-body" role="log" aria-live="polite"></div>
+        <div class="report-chat-footer">
+            <input id="reportChatInput" type="text" placeholder="Pergunte sobre o uso do LogKiller..." autocomplete="off" />
+            <button id="reportChatSend" class="send"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Shared modules -->
+    <script src="static/js/utils.js"></script>
+    <script src="static/js/storage.js"></script>
+    <script src="static/js/api.js"></script>
+    <!-- Page scripts -->
     <script src="static/js/main.js"></script>
+    <script src="static/js/chat_widget.js"></script>
+</body>
+</html>

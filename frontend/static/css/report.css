@@ -14,7 +14,7 @@ body {
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
 }
 .container {
-    max-width: 1100px;
+    max-width: 1240px;
     margin: 40px auto 0 auto;
     background: rgba(34, 40, 49, 0.98);
     border-radius: 18px;
@@ -23,22 +23,34 @@ body {
 }
 .header-content {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 24px;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 .logo i {
     font-size: 2.5rem;
     color: #00a8ff;
 }
+.site-logo { width: 64px; height: 64px; object-fit: contain; }
 .logo h1 {
     font-size: 2.2rem;
     margin: 0;
     font-weight: 700;
     color: #fff;
+    line-height: 1;
 }
 .header-info p {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: #dcdde1;
+    margin: 0;
 }
 .section-title {
     font-size: 1.5rem;
@@ -69,6 +81,11 @@ body {
     margin: 0;
     color: #fff;
 }
+/* Centralizar a data da análise na sua box */
+#analysisDate {
+    text-align: center;
+    width: 100%;
+}
 .iocs-list {
     display: flex;
     flex-wrap: wrap;
@@ -76,15 +93,23 @@ body {
     margin-bottom: 18px;
 }
 .ioc-item {
-    background: #2d3436;
+    background: transparent; /* igual ao fundo */
     border-radius: 8px;
-    padding: 8px 16px;
+    padding: 8px 0; /* sem padding lateral para alinhar */
     font-size: 1rem;
     color: #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
     gap: 8px;
+}
+/* Valor dos IoCs com largura fixa e monoespaçada para manter alinhamento */
+.ioc-item .ioc-value {
+    font-family: monospace;
+    display: inline-block;
+    width: 64ch; /* largura uniforme (SHA-256 cabe) */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .ioc-type {
     background: #00a8ff;
@@ -111,6 +136,38 @@ body {
 .recommendation i {
     color: #44bd32;
     font-size: 1.2rem;
+}
+.severity-meter {
+    position: relative;
+    margin-top: 10px;
+}
+.severity-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+    background: transparent;
+}
+.severity-bar .seg {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 6px 0;
+    border-radius: 6px;
+    color: #fff;
+}
+.severity-bar .seg-low { background: #1f3b26; border: 1px solid #2ecc71; }
+.severity-bar .seg-medium { background: #3b2d1f; border: 1px solid #ff9800; }
+.severity-bar .seg-high { background: #3b1f1f; border: 1px solid #f44336; }
+.severity-pointer {
+    position: absolute;
+    top: -6px;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 10px solid #00a8ff;
+    left: 10px; /* default, overridden by JS */
+    transition: left 0.25s ease;
 }
 .external-links {
     display: flex;
@@ -147,9 +204,73 @@ body {
     margin-bottom: 18px;
     font-size: 1.1rem;
 }
+.contexto-box p {
+    text-align: left;              /* alinha o texto à esquerda */
+    text-align-last: left;         /* última linha à esquerda quando aplicável */
+    hyphens: none;                 /* evita hifenização que pode gerar ruído visual */
+    overflow-wrap: anywhere;       /* evita overflow em termos longos/URLs */
+    word-break: normal;
+    word-spacing: normal;
+    letter-spacing: normal;
+}
+/* Severidade badges */
+.severity-high {
+    color: #f44336 !important;
+    background-color: #3b1f1f;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.severity-medium {
+    color: #ff9800 !important;
+    background-color: #3b2d1f;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.severity-low {
+    color: #4caf50 !important;
+    background-color: #1f3b26;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* No data helper */
+.no-data {
+    text-align: center;
+    padding: 14px;
+    color: #dcdde1;
+    font-style: italic;
+}
+
+/* Back action button */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #1a2a6c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.action-btn:hover {
+    background-color: #2a3a7c;
+    transform: translateY(-1px);
+}
 @media (max-width: 900px) {
     .container { padding: 16px; }
     .main-content { padding: 0; }
     .threat-info { flex-direction: column; gap: 16px; }
     .external-links { flex-direction: column; gap: 16px; }
 }
+

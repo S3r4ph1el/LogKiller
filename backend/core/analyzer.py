@@ -18,9 +18,11 @@ def analyze_logs(processed_logs: str, prompt: str | None = None) -> dict:
 
     input_prompt = (
         user_directive +
-        "Analise os seguintes logs e responda apenas em JSON válido com o seguinte formato: \n"
+        "Analise os seguintes logs e responda apenas em JSON válido com o seguinte formato (português):\n"
         "{\n"
         "  \"tipo_ameaca\": \"\",\n"
+        "  \"severidade\": \"Alta|Média|Baixa\",\n"
+        "  \"data_analise\": \"YYYY-MM-DD\",\n"
         "  \"iocs\": [],\n"
         "  \"contexto\": \"\",\n"
         "  \"recomendacoes\": []\n"
@@ -44,11 +46,13 @@ def analyze_logs(processed_logs: str, prompt: str | None = None) -> dict:
                         "type": "object",
                         "properties": {
                             "tipo_ameaca": {"type": "string"},
+                            "severidade": {"type": "string", "enum": ["Alta", "Média", "Baixa", "Crítica", "Critica", "High", "Medium", "Low"]},
+                            "data_analise": {"type": "string"},
                             "iocs": {"type": "array", "items": {"type": "string"}},
                             "contexto": {"type": "string"},
                             "recomendacoes": {"type": "array", "items": {"type": "string"}}
                         },
-                        "required": ["tipo_ameaca", "iocs", "contexto", "recomendacoes"],
+                        "required": ["tipo_ameaca", "severidade", "data_analise", "iocs", "contexto", "recomendacoes"],
                         "additionalProperties": False
                     }
                 }
@@ -57,7 +61,25 @@ def analyze_logs(processed_logs: str, prompt: str | None = None) -> dict:
         )
 
         content = response.output_text
-        return json.loads(content)
+        result = json.loads(content)
+
+        # Fallbacks de robustez
+        if not result.get("severidade"):
+            # Heurística simples baseada em quantidade de IoCs
+            iocs = result.get("iocs") or []
+            count = len(iocs) if isinstance(iocs, list) else 0
+            if count >= 10:
+                result["severidade"] = "Alta"
+            elif count >= 1:
+                result["severidade"] = "Média"
+            else:
+                result["severidade"] = "Baixa"
+
+        if not result.get("data_analise"):
+            from datetime import date
+            result["data_analise"] = date.today().isoformat()
+
+        return result
     except Exception as e:
         # Fallback robusto caso o parser falhe ou a chamada dê erro
         try:

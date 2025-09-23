@@ -1,0 +1,82 @@
+/* Floating chat widget shared styles */
+.report-chat-toggle {
+  position: fixed;
+  bottom: 22px;
+  right: 24px;
+  background: #00a8ff;
+  color: #fff;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 1000;
+}
+
+.report-chat-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 84px;
+  width: min(420px, calc(100% - 32px));
+  max-height: 70vh;
+  background: #2a2f38;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0,0,0,.35);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.08);
+  overflow-x: hidden;
+  z-index: 1000;
+}
+
+.report-chat-panel.open { display: flex; }
+.report-chat-header {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #1f2430; color: #fff; padding: 10px 12px;
+}
+.report-chat-header .title { display:flex; align-items:center; gap:8px; font-weight:600; }
+.chat-close { background: transparent; border: none; color: #ddd; font-size: 1.2rem; cursor: pointer; }
+
+.report-chat-chips { display:flex; gap:8px; flex-wrap:wrap; padding: 8px 12px; background:#20242e; }
+.report-chat-chips .chip { background:#0f3460; color:#fff; border-radius: 16px; padding:6px 10px; font-size:.85rem; cursor:pointer; }
+
+.report-chat-body {
+  padding: 12px; overflow-y:auto; background:#2a2f38; flex:1; color: #f5f6fa;
+}
+.report-chat-body .msg { display:flex; margin-bottom: 10px; min-width: 0; }
+.report-chat-body .msg .bubble {
+  padding: 10px 12px;
+  border-radius: 10px;
+  max-width: 80%;
+  line-height: 1.4;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+.report-chat-body .msg.user { justify-content: flex-end; }
+.report-chat-body .msg.user .bubble { background: #0f3460; color:#fff; border-top-right-radius: 4px; }
+.report-chat-body .msg.bot .bubble { background: #353b48; color:#ecf0f1; border-top-left-radius: 4px; }
+
+/* Monospace styling for long hex-like sequences within messages */
+.report-chat-body .msg .bubble code,
+.report-chat-body .msg .bubble .hash,
+.report-chat-body .msg .bubble pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.report-chat-footer { display:flex; gap:8px; padding: 10px 12px; background:#1f2430; border-top: 1px solid rgba(255,255,255,.08); }
+.report-chat-footer input { flex:1; background:#2a2f38; color:#fff; border:1px solid #3b4252; border-radius: 8px; padding: 10px; outline:none; }
+.report-chat-footer .send { background:#00a8ff; color:#fff; border:none; border-radius: 8px; padding: 10px 14px; cursor:pointer; font-weight:600; }
+
+.report-chat-typing { opacity: .8; font-style: italic; }
