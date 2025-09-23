@@ -1,46 +1,45 @@
-# Estrutura do Projeto
+# Estrutura do Projeto (atual)
 
 ```plaintext
 LogKiller/
 ├── backend/
-│   ├── app.py                 # Flask principal (entrypoint)
-│   ├── config.py              # Configurações (chaves API, paths, etc.)
-│   ├── requirements.txt       # Dependências do backend
+│   ├── app.py                 # App Flask (entrypoint, estáticos e assets)
+│   ├── requeriments.txt       # Dependências do backend (arquivo existente no repo)
 │   ├── core/
 │   │   ├── __init__.py
-│   │   ├── cleaner.py         # Filtro, limpeza, normalização dos logs, anonimização
-│   │   └── analyzer.py        # Envio para OpenAI API e análise de ameaças
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   ├── logs.py            # Endpoints para upload e processamento de logs
-│   │   ├── chatbot.py         # Endpoints do chatbot
-│   │   └── reports.py         # Endpoints para gerar e servir relatórios HTML
-│   ├── utils/
-│   │   ├── helpers.py         # Funções auxiliares
-│   │   ├── validators.py      # Validação de entradas
-│   │   └── mitre_links.py     # Geração automática de links úteis (MITRE, VT, CVE)
-│   └── tests/
-│       ├── test_logs.py       # Testes unitários processamento de logs
-│       ├── test_chatbot.py    # Testes do chatbot
-│       └── test_reports.py    # Testes relatórios
+│   │   ├── cleaner.py         # Limpeza/normalização de logs
+│   │   ├── analyzer.py        # Análise (usa OpenAI quando disponível)
+│   │   └── storage.py         # Persistência em JSON, listagem, exclusão, reset
+│   ├── data/
+│   │   ├── summary.json       # Estatísticas agregadas
+│   │   └── reports/           # Relatórios salvos (<id>.json)
+│   └── routes/
+│       ├── __init__.py
+│       ├── logs.py            # /analyze, /stats, /reports, /admin/reset
+│       └── chatbot.py         # /chat
 ├── frontend/
-│   ├── index.html             # Interface principal
-│   ├── report.html            # Template do relatório interativo
-│   ├── chatbot.html           # UI do chatbot
+│   ├── index.html             # Upload, progresso, estatísticas e recentes
+│   ├── report.html            # Visualização do relatório e chat contextual
 │   ├── static/
 │   │   ├── css/
-│   │   │   └── style.css
+│   │   │   ├── style.css
+│   │   │   ├── report.css
+│   │   │   └── chat.css
 │   │   └── js/
-│   │       ├── main.js
-│   │       ├── report.js
-│   │       └── chatbot.js
+│   │       ├── utils.js       # Utilitários (escape, IoC type, formatos)
+│   │       ├── api.js         # Cliente HTTP para as APIs
+│   │       ├── storage.js     # LocalStorage com namespace
+│   │       ├── main.js        # Fluxo da página inicial
+│   │       ├── report.js      # Renderização do relatório
+│   │       └── chat_widget.js # Chat flutuante (index e report)
 │   └── assets/
-│       ├── icons/             # Ícones usados no dashboard/chatbot
-│       └── img/               # Logos e imagens
+│       ├── icons/
+│       │   ├── favicon.ico
+│       │   └── icon.png
+│       └── img/
+│           └── logkiller.jpeg
 ├── docs/
-│   ├── API_REFERENCE.md       # Endpoints do backend
-│   └── STRUCTURE.md           # Estrutura do projeto
-├── docker-compose.yml
-├── Dockerfile
-└── .gitignore
+│   ├── API_REFERENCE.md       # Endpoints do backend (atualizado)
+│   └── STRUCTURE.md           # Este arquivo
+└── README.md
 ```
