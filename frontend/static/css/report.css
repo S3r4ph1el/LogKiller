@@ -63,6 +63,9 @@ body {
     display: flex;
     gap: 32px;
     margin-bottom: 18px;
+    justify-content: center; /* centraliza horizontalmente as 3 boxes */
+    flex-wrap: wrap;          /* permite quebra em telas menores mantendo centralização */
+    align-items: stretch;     /* mantém alturas consistentes */
 }
 .info-card {
     background: #353b48;
@@ -270,7 +273,7 @@ body {
 @media (max-width: 900px) {
     .container { padding: 16px; }
     .main-content { padding: 0; }
-    .threat-info { flex-direction: column; gap: 16px; }
+    .threat-info { flex-direction: column; gap: 16px; align-items: center; }
     .external-links { flex-direction: column; gap: 16px; }
 }
 
